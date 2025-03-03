@@ -12,4 +12,13 @@ INSERT INTO nearyou.tuttiInteressi (categoria) VALUES
 ('Natura'),
 ('Sport'),
 ('Tecnologia'),
-('Moda');
+('Moda'),
+('Arte'),
+('Musica'),
+('Viaggi'),
+('Fitness'),
+('Educazione'),
+('Giochi'),
+('Fotografia'),
+('Cinema'),
+('Teatro');
