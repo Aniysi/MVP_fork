@@ -20,6 +20,7 @@ WORKDIR /app
 COPY Tests/requirements.txt .
 COPY Tests/.coveragerc .
 COPY Tests/pylintrc .
+COPY Tests/metrics_analysis.py .
 RUN mkdir -p app/SimulationModule
 RUN mkdir -p app/FlinkProcessor
 RUN mkdir -p app/IntegrationTests
@@ -38,7 +39,8 @@ RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN pip install -U pip
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install pytest pytest-cov coveralls pylint
+RUN pip install pytest pytest-cov coveralls pylint radon
+
 
 # Crea directory per i report
 COPY ./__init__.py /app/
@@ -48,8 +50,20 @@ RUN chmod -R 777 /app
 
 RUN ls -la /app
 # Esegue i test con coverage
-CMD ["sh","-c","pylint --rcfile=pylintrc --output-format=parseable . > pylint_report.txt; rm SimulationModule/__init__.py ; pytest --cov=SimulationModule --cov=FlinkProcessor --cov-report=xml:coverage.xml SimulationModule/Tests/  --cov-branch --cov-config=.coveragerc "]
-
+CMD ["sh","-c","\
+    pylint --rcfile=pylintrc --output-format=parseable . > pylint_report.txt && \
+    rm SimulationModule/__init__.py && \
+    pytest --cov=SimulationModule --cov=FlinkProcessor --cov-report=xml:coverage.xml SimulationModule/Tests/ --cov-branch --cov-config=.coveragerc && \
+    python metrics_analysis.py > metrics_report.json && \
+    python -c '\
+        import json; \
+        import xml.etree.ElementTree as ET; \
+        metrics = json.load(open(\"metrics_report.json\")); \
+        tree = ET.parse(\"coverage.xml\"); \
+        root = tree.getroot(); \
+        root.set(\"fan-in-out\", json.dumps(metrics)); \
+        tree.write(\"coverage.xml\")' \
+"]
 
 # # Costruisci l'immagine
 # docker build -t python-test-coverage -f tests/Dockerfile .  
