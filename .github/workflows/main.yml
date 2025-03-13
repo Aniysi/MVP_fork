@@ -47,12 +47,14 @@ jobs:
           exit 1
         fi
 
-    - name: Upload coverage to Coveralls
-      uses: coverallsapp/github-action@v2
-      with:
-        github-token: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        file: ./coverage/coverage.xml
-        format: cobertura
+    - name: Upload coverage to GitHub
+      run: |
+        echo "Committing coverage report to GitHub"
+        git add ./coverage/coverage.xml
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git commit -m "Update coverage report"
+        git push
 
     - name: List files in directory
       run: |
