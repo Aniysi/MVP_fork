@@ -1,7 +1,7 @@
 services:
   zookeeper:
     hostname: zookeeper
-    container_name: zookeeper
+    container_name: zookeeperF
     image: confluentinc/cp-zookeeper:7.6.0
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -13,7 +13,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     hostname: kafka
-    container_name: kafka
+    container_name: kafkaF
     depends_on:
       - zookeeper
       - clickhouse
@@ -42,7 +42,7 @@ services:
     profiles: ["test","develop","prod"]
 
   kafdrop:
-    container_name: kafdrop
+    container_name: kafdropF
     image: obsidiandynamics/kafdrop
     restart: "no"
     ports:
@@ -55,7 +55,7 @@ services:
     profiles: ["develop","prod"]
 
   grafana:
-    container_name: grafana
+    container_name: grafanaF
     image: grafana/grafana:latest
     ports:
       - "3000:3000"
@@ -87,7 +87,7 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server:24.10
     hostname: clickhouse
-    container_name: clickhouse
+    container_name: clickhouseF
     ports:
       - "8123:8123"
       - "9000:9000"
@@ -107,7 +107,7 @@ services:
   #       condition: service_healthy
 
   positionsimulator:
-    container_name: positions
+    container_name: positionsF
     build: ./SimulationModule
     # mem_limit: 4G # Limita la memoria a 2GB
     depends_on:
@@ -115,7 +115,7 @@ services:
         condition: service_healthy
     profiles: ["test","develop","prod"]
   flink:
-    container_name: flink
+    container_name: flinkF
 
     build: ./FlinkProcessor
     volumes:
@@ -126,7 +126,7 @@ services:
     profiles: ["test","develop","prod"]
 
   test:
-    container_name: test
+    container_name: testF
     build: 
       context: ./
       dockerfile: Tests/Dockerfile
