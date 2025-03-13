@@ -55,28 +55,30 @@ jobs:
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git commit -m "Update coverage report"
         git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: List files in directory
       run: |
         cat ./pylint_report.txt
 
-    - name: Create Pylint Badge and put in README.md
-      uses: actions/setup-python@v5
-      with: 
-        python-version: '3.12.2'
-    - run: |
-        python pylintbadge.py
+    # - name: Create Pylint Badge and put in README.md
+    #   uses: actions/setup-python@v5
+    #   with: 
+    #     python-version: '3.12.2'
+    # - run: |
+    #     python pylintbadge.py
       
-    - name: Push README with changed badge to origin
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        if [[ $(git diff --name-only 'README.md') ]]; then
-          git add README.md
-          git commit -m "Update Pylint Badge"
-          git push 
-        else
-          echo "No changes to README.md, skipping commit and push."
-        fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Push README with changed badge to origin
+    #   run: |
+    #     git config user.name "github-actions[bot]"
+    #     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+    #     if [[ $(git diff --name-only 'README.md') ]]; then
+    #       git add README.md
+    #       git commit -m "Update Pylint Badge"
+    #       git push 
+    #     else
+    #       echo "No changes to README.md, skipping commit and push."
+    #     fi
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
